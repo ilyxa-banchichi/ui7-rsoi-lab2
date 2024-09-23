@@ -12,9 +12,20 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
-      - "5432:5432"
+      - 8000:5432
 
-# TODO добавить сервисы
+  gateway:
+    image: ilyxabanchichi/rsoi-lab2-gateway:latest
+    restart: always
+    build:
+      context: ./app/Gateway
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 8080:8080
 
 volumes:
   db-data:
