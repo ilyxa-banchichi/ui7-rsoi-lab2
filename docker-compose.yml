@@ -12,7 +12,9 @@ services:
       - db-data:/var/lib/postgresql/data
       - ./postgres/:/docker-entrypoint-initdb.d/
     ports:
-      - 8000:5432
+      - "8000:5432"
+    networks:
+      - db-local
 
   gateway:
     image: ilyxabanchichi/rsoi-lab2-gateway:latest
@@ -25,7 +27,34 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - 8080:8080
+      - "8080:8080"
+    networks:
+      - library-local
+
+  library-service:
+    image: ilyxabanchichi/rsoi-lab2-library-service:latest
+    restart: always
+    build:
+      context: ./app/LibraryService
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
+    environment:
+      - ASPNETCORE_URLS=http://+:8060
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=libraries;Username=program;Password=test
+    ports:
+      - "8060:8060"
+    depends_on:
+      - postgres
+    networks:
+      - db-local
+      - library-local
+
+networks:
+  library-local:
+  db-local:
+    driver: bridge
 
 volumes:
   db-data:
