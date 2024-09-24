@@ -31,6 +31,7 @@ services:
       - 8080:8080
     networks:
       - library-local
+      - reservation-local
 
   library-service:
     image: ilyxabanchichi/rsoi-lab2-library-service:latest
@@ -52,8 +53,29 @@ services:
       - db-local
       - library-local
 
+  reservation-service:
+    image: ilyxabanchichi/rsoi-lab2-reservation-service:latest
+    restart: always
+    build:
+      context: ./app/ReservationService
+      dockerfile: ./Dockerfile
+      args:
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
+    environment:
+      - ASPNETCORE_URLS=http://+:8070
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=reservations;Username=program;Password=test
+    ports:
+      - 8070:8070
+    depends_on:
+      - postgres
+    networks:
+      - db-local
+      - reservation-local
+
 networks:
   library-local:
+  reservation-local:
   db-local:
     driver: bridge
 
