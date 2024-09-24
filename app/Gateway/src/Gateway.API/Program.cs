@@ -19,7 +19,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
-builder.Services.AddTransient<ILibraryService, LibraryService>();
+builder.Services.AddTransient<ILibraryService, LibraryService>(provider =>
+{
+    var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
+    return new LibraryService(clientFactory, builder.Configuration.GetConnectionString("LibraryService"));
+});
 
 var app = builder.Build();
 

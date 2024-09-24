@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryService.Storage.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    [Migration("20240923192611_AddConditionCheckConstraint")]
-    partial class AddConditionCheckConstraint
+    [Migration("20240924122927_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,6 +55,26 @@ namespace LibraryService.Storage.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Author = "Бьерн Страуструп",
+                            BookUid = new Guid("f7cdc58f-2caf-4b15-9727-f89dcc629b27"),
+                            Condition = "EXCELLENT",
+                            Genre = "Научная фантастика",
+                            Name = "Краткий курс C++ в 7 томах"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Author = "Какой-то хер",
+                            BookUid = new Guid("4b069a85-fb1c-4830-ae46-8bf96eeda096"),
+                            Condition = "BAD",
+                            Genre = "Ужас",
+                            Name = "Отсутствующая книга"
+                        });
                 });
 
             modelBuilder.Entity("LibraryService.Common.Models.Library", b =>
@@ -83,6 +103,24 @@ namespace LibraryService.Storage.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Libraries");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "2-я Бауманская ул., д.5, стр.1",
+                            City = "Москва",
+                            LibraryUid = new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"),
+                            Name = "Библиотека имени 7 Непьющих"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "Ешё дальше",
+                            City = "Далеко",
+                            LibraryUid = new Guid("9074f458-2ae8-4d64-9c38-d67aa7d551a3"),
+                            Name = "Тут ничего нету"
+                        });
                 });
 
             modelBuilder.Entity("LibraryService.Common.Models.LibraryBooks", b =>
@@ -101,6 +139,32 @@ namespace LibraryService.Storage.Migrations
                     b.HasIndex("LibraryId");
 
                     b.ToTable("LibraryBooks");
+
+                    b.HasData(
+                        new
+                        {
+                            BookId = 1,
+                            LibraryId = 1,
+                            AvailableCount = 0
+                        },
+                        new
+                        {
+                            BookId = 2,
+                            LibraryId = 1,
+                            AvailableCount = 0
+                        },
+                        new
+                        {
+                            BookId = 1,
+                            LibraryId = 2,
+                            AvailableCount = 0
+                        },
+                        new
+                        {
+                            BookId = 2,
+                            LibraryId = 2,
+                            AvailableCount = 0
+                        });
                 });
 
             modelBuilder.Entity("LibraryService.Common.Models.LibraryBooks", b =>

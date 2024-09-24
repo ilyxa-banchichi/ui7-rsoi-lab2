@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 
 namespace LibraryService.Common.Models.DTO;
 
-public class LibraryPaginationResponse
+public class LibraryBookPaginationResponse
 {
     /// <summary>
     /// Номер страницы
@@ -29,5 +29,5 @@ public class LibraryPaginationResponse
     /// Gets or Sets Items
     /// </summary>
     [DataMember(Name="items")]
-    public List<LibraryResponse> Items { get; set; }
+    public List<LibraryBookResponse> Items { get; set; }
 }

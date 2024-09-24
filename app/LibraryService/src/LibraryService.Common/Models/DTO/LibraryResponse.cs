@@ -9,7 +9,7 @@ public class LibraryResponse
     /// </summary>
     /// <value>UUID библиотеки</value>
     [DataMember(Name="libraryUid")]
-    public Guid? LibraryUid { get; set; }
+    public string LibraryUid { get; set; }
 
     /// <summary>
     /// Название библиотеки

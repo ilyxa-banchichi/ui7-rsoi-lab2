@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
+
 builder.Services.AddDbContext<PostgresContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );

@@ -28,8 +28,55 @@ public class PostgresContext(DbContextOptions<PostgresContext> options) : DbCont
         modelBuilder.Entity<Book>()
             .Property(b => b.Condition)
             .HasConversion(
-                v => v.ToString(), // Конвертация в строку при сохранении
+                v => v.ToString().ToUpper(), // Конвертация в строку при сохранении
                 v => (BookCondition)Enum.Parse(typeof(BookCondition), v) // Конвертация из строки при чтении
             );
+
+        modelBuilder.Entity<Library>().HasData(
+            new Library()
+            {
+                Id = 1,
+                LibraryUid = Guid.Parse("83575e12-7ce0-48ee-9931-51919ff3c9ee"),
+                Name = "Библиотека имени 7 Непьющих",
+                City = "Москва",
+                Address = "2-я Бауманская ул., д.5, стр.1"
+            },
+            new Library()
+            {
+                Id = 2,
+                LibraryUid = Guid.NewGuid(),
+                Name = "Тут ничего нету",
+                City = "Далеко",
+                Address = "Ешё дальше"
+            }
+        );
+        
+        modelBuilder.Entity<Book>().HasData(
+            new Book()
+            {
+                Id = 1,
+                BookUid = Guid.Parse("f7cdc58f-2caf-4b15-9727-f89dcc629b27"),
+                Name = "Краткий курс C++ в 7 томах",
+                Author = "Бьерн Страуструп",
+                Genre = "Научная фантастика",
+                Condition = BookCondition.EXCELLENT
+            },
+            new Book()
+            {
+                Id = 2,
+                BookUid = Guid.NewGuid(),
+                Name = "Отсутствующая книга",
+                Author = "Какой-то хер",
+                Genre = "Ужас",
+                Condition = BookCondition.BAD
+            }
+        );
+
+        modelBuilder.Entity<LibraryBooks>().HasData(
+            new LibraryBooks() { BookId = 1, LibraryId = 1, AvailableCount = 1},
+            new LibraryBooks() { BookId = 2, LibraryId = 1},
+            new LibraryBooks() { BookId = 1, LibraryId = 2},
+            new LibraryBooks() { BookId = 2, LibraryId = 2}
+        );
     }
 }

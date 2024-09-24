@@ -1,4 +1,5 @@
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace LibraryService.Common.Models;
 
@@ -15,14 +16,19 @@ public class Book
     public List<LibraryBooks> LibraryBooks { get; set; }
 }
 
+/// <summary>
+/// Состояние книги
+/// </summary>
+/// <value>Состояние книги</value>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum BookCondition
 {
     [EnumMember(Value = "EXCELLENT")]
-    Excellent = 0,
+    EXCELLENT = 0,
     
     [EnumMember(Value = "GOOD")]
-    Good = 1,
+    GOOD = 1,
     
     [EnumMember(Value = "BAD")]
-    Bad = 2,
+    BAD = 2,
 }
