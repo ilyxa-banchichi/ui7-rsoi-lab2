@@ -26,6 +26,7 @@ services:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__RatingService=http://library-service:8050
       - ConnectionStrings__LibraryService=http://library-service:8060
       - ConnectionStrings__ReservationService=http://reservation-service:8070
     ports:
@@ -33,6 +34,7 @@ services:
     networks:
       - library-local
       - reservation-local
+      - rating-local
 
   library-service:
     image: ilyxabanchichi/rsoi-lab2-library-service:latest
@@ -74,9 +76,30 @@ services:
       - db-local
       - reservation-local
 
+  rating-service:
+    image: ilyxabanchichi/rsoi-lab2-rating-service:latest
+    restart: always
+    build:
+      context: ./app
+      dockerfile: ./RatingService/Dockerfile
+      args:
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
+    environment:
+      - ASPNETCORE_URLS=http://+:8050
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=ratings;Username=program;Password=test
+    ports:
+      - 8050:8050
+    depends_on:
+      - postgres
+    networks:
+      - db-local
+      - rating-local
+
 networks:
   library-local:
   reservation-local:
+  rating-local:
   db-local:
     driver: bridge
 
