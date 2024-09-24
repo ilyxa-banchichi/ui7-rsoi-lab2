@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - master
+env:
+  BUILD_CONFIGURATION: Debug
+
 jobs:
   build:
     name: Autograding
@@ -15,11 +18,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: docker/setup-buildx-action@v2 
+      - uses: docker/setup-buildx-action@v2
 
       # TODO build and run unit tests
 
       - name: Build images
+        env:
+          BUILD_CONFIGURATION: ${{ env.BUILD_CONFIGURATION }}
         timeout-minutes: 10
         run: docker compose build
 
