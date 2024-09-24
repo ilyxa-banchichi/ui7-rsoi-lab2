@@ -18,9 +18,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: docker/setup-buildx-action@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+      - name: Install dependencies
+        run: |
+          dotnet restore ./app/Common
+          dotnet restore ./app/Gateway
+          dotnet restore ./app/LibraryService
+          dotnet restore ./app/RatingService
+          dotnet restore ./app/ReservationService
+  
+      - name: Build
+        run: |
+          dotnet build ./app/Common
+          dotnet build ./app/Gateway
+          dotnet build ./app/LibraryService
+          dotnet build ./app/RatingService
+          dotnet build ./app/ReservationService
 
-      # TODO build and run unit tests
+      - uses: docker/setup-buildx-action@v2
 
       - name: Build images
         env:
