@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using Common.Models.DTO;
 using LibraryService.Common.Converters;
-using LibraryService.Common.Models;
-using LibraryService.Common.Models.DTO;
 using LibraryService.Storage.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +9,8 @@ namespace LibraryService.API.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-public class LibrariesController(ILibrariesRepository librariesRepository) : Controller
+public class LibrariesController(
+    ILibrariesRepository librariesRepository, IBooksRepository booksRepository) : Controller
 {
     /// <summary>
     /// Получить список библиотек в городе
@@ -70,6 +70,36 @@ public class LibrariesController(ILibrariesRepository librariesRepository) : Con
                 Items = libraryBooks.Select(libraryBook => libraryBook.ConvertAppModelToDto()).ToList()
             };
             return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    [HttpGet("list")]
+    [ProducesResponseType(typeof(List<LibraryResponse>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetLibrariesList([FromHeader] IEnumerable<Guid> librariesUid)
+    {
+        try
+        {
+            var libraries = await librariesRepository.GetLibrariesListAsync(librariesUid);
+            return Ok(libraries.Select(lib => lib.ConvertAppModelToDto()).ToList());
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    [HttpGet("books/list")]
+    [ProducesResponseType(typeof(List<BookInfo>), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetBooksList([FromHeader] IEnumerable<Guid> booksUid)
+    {
+        try
+        {
+            var books = await booksRepository.GetBooksListAsync(booksUid);
+            return Ok(books.Select(book => book.ConvertAppModelToDto()).ToList());
         }
         catch (Exception e)
         {

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using Common.Models.Enums;
 
 namespace ReservationService.Common.Models;
 
@@ -29,17 +28,4 @@ public class Reservation
 
     [Required]
     public DateTime TillDate { get; set; }
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum ReservationStatus
-{
-    [EnumMember(Value = "RENTED")]
-    RENTED,
-    
-    [EnumMember(Value = "RETURNED")]
-    RETURNED,
-    
-    [EnumMember(Value = "EXPIRED")]
-    EXPIRED
 }

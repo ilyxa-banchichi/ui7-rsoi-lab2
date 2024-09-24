@@ -1,3 +1,4 @@
+using Common.Models.Enums;
 using LibraryService.Common.Models;
 using Microsoft.EntityFrameworkCore;
 

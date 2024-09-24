@@ -20,13 +20,14 @@ services:
     image: ilyxabanchichi/rsoi-lab2-gateway:latest
     restart: always
     build:
-      context: ./app/Gateway
-      dockerfile: ./Dockerfile
+      context: ./app
+      dockerfile: ./Gateway/Dockerfile
       args:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__LibraryService=http://library-service:8060
+      - ConnectionStrings__ReservationService=http://reservation-service:8070
     ports:
       - 8080:8080
     networks:
@@ -37,8 +38,8 @@ services:
     image: ilyxabanchichi/rsoi-lab2-library-service:latest
     restart: always
     build:
-      context: ./app/LibraryService
-      dockerfile: ./Dockerfile
+      context: ./app
+      dockerfile: ./LibraryService/Dockerfile
       args:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
@@ -57,8 +58,8 @@ services:
     image: ilyxabanchichi/rsoi-lab2-reservation-service:latest
     restart: always
     build:
-      context: ./app/ReservationService
-      dockerfile: ./Dockerfile
+      context: ./app
+      dockerfile: ./ReservationService/Dockerfile
       args:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:

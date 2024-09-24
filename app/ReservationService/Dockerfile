@@ -1,23 +1,31 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿# Используем базовый образ для .NET SDK 8.0 для сборки
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+
+ARG BUILD_CONFIGURATION
+RUN echo ${BUILD_CONFIGURATION}
+
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["src/ReservationService.API/ReservationService.API.csproj", "src/ReservationService.API/"]
-RUN dotnet restore "src/ReservationService.API/ReservationService.API.csproj"
-COPY . .
-WORKDIR "/src/src/ReservationService.API"
-RUN dotnet build "ReservationService.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Копируем solution файл
+COPY ../ReservationService/ReservationService.sln ./ReservationService/
+COPY ../Common/Common.sln ./Common/
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "ReservationService.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Копируем все проекты
+COPY ../ReservationService/ ./ReservationService/
+COPY ../Common/ ./Common/
 
-FROM base AS final
+# Восстанавливаем зависимости (включая проекты из разных директорий)
+RUN dotnet restore ./ReservationService/src/ReservationService.API/ReservationService.API.csproj
+
+# Собираем проект
+RUN dotnet publish ./ReservationService/src/ReservationService.API/ReservationService.API.csproj -c "$BUILD_CONFIGURATION" -o /app/out
+
+# Используем минимальный runtime-образ для запуска приложения
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build-env /app/out .
+
+# Задаем команду запуска приложения
 ENTRYPOINT ["dotnet", "ReservationService.API.dll"]

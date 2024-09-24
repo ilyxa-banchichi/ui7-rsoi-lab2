@@ -1,22 +1,31 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿# Используем базовый образ для .NET SDK 8.0 для сборки
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+
+ARG BUILD_CONFIGURATION
+RUN echo ${BUILD_CONFIGURATION}
+
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
-EXPOSE 8060
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["src/LibraryService.API/LibraryService.API.csproj", "src/LibraryService.API/"]
-RUN dotnet restore "src/LibraryService.API/LibraryService.API.csproj"
-COPY . .
-WORKDIR "/src/src/LibraryService.API"
-RUN dotnet build "LibraryService.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Копируем solution файл
+COPY ../LibraryService/LibraryService.sln ./LibraryService/
+COPY ../Common/Common.sln ./Common/
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "LibraryService.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Копируем все проекты
+COPY ../LibraryService/ ./LibraryService/
+COPY ../Common/ ./Common/
 
-FROM base AS final
+# Восстанавливаем зависимости (включая проекты из разных директорий)
+RUN dotnet restore ./LibraryService/src/LibraryService.API/LibraryService.API.csproj
+
+# Собираем проект
+RUN dotnet publish ./LibraryService/src/LibraryService.API/LibraryService.API.csproj -c "$BUILD_CONFIGURATION" -o /app/out
+
+# Используем минимальный runtime-образ для запуска приложения
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build-env /app/out .
+
+# Задаем команду запуска приложения
 ENTRYPOINT ["dotnet", "LibraryService.API.dll"]

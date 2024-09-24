@@ -1,5 +1,4 @@
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using Common.Models.Enums;
 
 namespace LibraryService.Common.Models;
 
@@ -14,21 +13,4 @@ public class Book
 
     // Связь один-ко-многим с таблицей LibraryBooks
     public List<LibraryBooks> LibraryBooks { get; set; }
-}
-
-/// <summary>
-/// Состояние книги
-/// </summary>
-/// <value>Состояние книги</value>
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum BookCondition
-{
-    [EnumMember(Value = "EXCELLENT")]
-    EXCELLENT = 0,
-    
-    [EnumMember(Value = "GOOD")]
-    GOOD = 1,
-    
-    [EnumMember(Value = "BAD")]
-    BAD = 2,
 }

@@ -1,13 +1,13 @@
+using Common.Models.DTO;
 using ReservationService.Common.Models;
-using ReservationService.Common.Models.DTO;
 
 namespace ReservationService.Common.Converters;
 
 public static class ReservationConverter
 {
-    public static BookReservationResponse ConvertAppModelToDto(this Reservation reservation)
+    public static RawBookReservationResponse ConvertAppModelToDto(this Reservation reservation)
     {
-        return new BookReservationResponse()
+        return new RawBookReservationResponse()
         {
             ReservationUid = reservation.ReservationUid,
             Username = reservation.Username,

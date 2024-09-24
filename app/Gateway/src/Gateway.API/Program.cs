@@ -25,6 +25,12 @@ builder.Services.AddTransient<ILibraryService, LibraryService>(provider =>
     return new LibraryService(clientFactory, builder.Configuration.GetConnectionString("LibraryService"));
 });
 
+builder.Services.AddTransient<IReservationService, ReservationService>(provider =>
+{
+    var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
+    return new ReservationService(clientFactory, builder.Configuration.GetConnectionString("ReservationService"));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

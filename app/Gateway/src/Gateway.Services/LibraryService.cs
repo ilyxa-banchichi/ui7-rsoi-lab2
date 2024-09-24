@@ -1,48 +1,41 @@
-using System.Net.Http.Json;
-using System.Text.Json;
-using Gateway.Common.Models.DTO;
+using Common.Models.DTO;
 
 namespace Gateway.Services;
 
-public class LibraryService : ILibraryService
+public class LibraryService(IHttpClientFactory httpClientFactory, string baseUrl)
+    : BaseHttpService(httpClientFactory, baseUrl), ILibraryService
 {
-    private readonly HttpClient _httpClient;
-
-    public LibraryService(IHttpClientFactory httpClientFactory, string baseUrl)
-    {
-        _httpClient = httpClientFactory.CreateClient();
-        _httpClient.BaseAddress = new Uri(baseUrl);
-    }
-
     public async Task<LibraryPaginationResponse> GetLibrariesInCityAsync(
         string city, int page, int size)
     {
-        var path = $"/api/v1/libraries?city={city}&page={page}&size={size}";
-        var response = await _httpClient.GetAsync(path);
-        if (!response.IsSuccessStatusCode)
-            throw new HttpRequestException(HttpRequestError.InvalidResponse,
-                $"StatusCode: {response.StatusCode}");
-            
-        var result = await response.Content.ReadFromJsonAsync<LibraryPaginationResponse>();
-        if (result == null)
-            throw new JsonException("Invalid response");
-
-        return result;
+        var method = $"/api/v1/libraries?city={city}&page={page}&size={size}";
+        return await GetAsync<LibraryPaginationResponse>(method);
     }
 
     public async Task<LibraryBookPaginationResponse> GetBooksInLibraryAsync(
         string libraryUid, int page, int size, bool showAll = false)
     {
-        var path = $"/api/v1/libraries/{libraryUid}/books?page={page}&size={size}&showAll={showAll}";
-        var response = await _httpClient.GetAsync(path);
-        if (!response.IsSuccessStatusCode)
-            throw new HttpRequestException(HttpRequestError.InvalidResponse,
-                $"StatusCode: {response.StatusCode}");
-            
-        var result = await response.Content.ReadFromJsonAsync<LibraryBookPaginationResponse>();
-        if (result == null)
-            throw new JsonException("Invalid response");
+        var method = $"/api/v1/libraries/{libraryUid}/books?page={page}&size={size}&showAll={showAll}";
+        return await GetAsync<LibraryBookPaginationResponse>(method);
+    }
 
-        return result;
+    public async Task<List<LibraryResponse>> GetLibrariesList(IEnumerable<Guid> librariesUid)
+    {
+        var method = $"/api/v1/libraries/list";
+        return await GetAsync<List<LibraryResponse>>(method,
+            new Dictionary<string, string>()
+            {
+                { "librariesUid", string.Join(", ", librariesUid) }
+            });
+    }
+
+    public async Task<List<BookInfo>> GetBooksList(IEnumerable<Guid> booksUid)
+    {
+        var method = $"/api/v1/libraries/books/list";
+        return await GetAsync<List<BookInfo>>(method,
+            new Dictionary<string, string>()
+            {
+                { "booksUid", string.Join(", ", booksUid) }
+            });
     }
 }

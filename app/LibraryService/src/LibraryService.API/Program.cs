@@ -19,6 +19,7 @@ builder.Services.AddDbContext<PostgresContext>(
 );
 
 builder.Services.AddTransient<ILibrariesRepository, LibrariesRepository>();
+builder.Services.AddTransient<IBooksRepository, BooksRepository>();
 
 var app = builder.Build();
 

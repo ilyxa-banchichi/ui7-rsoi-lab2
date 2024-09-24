@@ -27,13 +27,11 @@ public class LibrariesRepository(PostgresContext db) : ILibrariesRepository
     public async Task<List<Library>> GetLibrariesInCityAsync(
         string city, int page = 1, int size = Int32.MaxValue)
     {
-        var libraries = await db.Libraries
+        return await db.Libraries
             .Where(l => l.City == city)
             .Skip((page - 1) * size)
             .Take(size)
-            .ToListAsync();
-
-        return libraries;
+            .ToListAsync();;
     }
 
     public async Task<List<LibraryBooks>> GetBooksInLibraryAsync(
@@ -53,6 +51,13 @@ public class LibrariesRepository(PostgresContext db) : ILibrariesRepository
         return await libraryBooksQuery
             .Skip((page - 1) * size)
             .Take(size)
+            .ToListAsync();
+    }
+
+    public async Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUid)
+    {
+        return await db.Libraries
+            .Where(l => librariesUid.Contains(l.LibraryUid))
             .ToListAsync();
     }
 }

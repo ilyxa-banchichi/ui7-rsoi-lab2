@@ -1,22 +1,31 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿# Используем базовый образ для .NET SDK 8.0 для сборки
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+
+ARG BUILD_CONFIGURATION
+RUN echo ${BUILD_CONFIGURATION}
+
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
-EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["src/Gateway.API/Gateway.API.csproj", "src/Gateway.API/"]
-RUN dotnet restore "src/Gateway.API/Gateway.API.csproj"
-COPY . .
-WORKDIR "/src/src/Gateway.API"
-RUN dotnet build "Gateway.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Копируем solution файл
+COPY ../Gateway/Gateway.sln ./Gateway/
+COPY ../Common/Common.sln ./Common/
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Gateway.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Копируем все проекты
+COPY ../Gateway/ ./Gateway/
+COPY ../Common/ ./Common/
 
-FROM base AS final
+# Восстанавливаем зависимости (включая проекты из разных директорий)
+RUN dotnet restore ./Gateway/src/Gateway.API/Gateway.API.csproj
+
+# Собираем проект
+RUN dotnet publish ./Gateway/src/Gateway.API/Gateway.API.csproj -c "$BUILD_CONFIGURATION" -o /app/out
+
+# Используем минимальный runtime-образ для запуска приложения
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build-env /app/out .
+
+# Задаем команду запуска приложения
 ENTRYPOINT ["dotnet", "Gateway.API.dll"]
