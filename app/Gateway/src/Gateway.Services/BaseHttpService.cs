@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -13,7 +14,7 @@ public abstract class BaseHttpService
         _httpClient.BaseAddress = new Uri(baseUrl);
     }
 
-    protected async Task<T> GetAsync<T>(string method, Dictionary<string, string>? headers = default)
+    protected async Task<T?> GetAsync<T>(string method, Dictionary<string, string>? headers = default)
     {
         if (headers != default)
         {
@@ -25,11 +26,16 @@ public abstract class BaseHttpService
         if (!response.IsSuccessStatusCode)
             throw new HttpRequestException(HttpRequestError.InvalidResponse,
                 $"StatusCode: {response.StatusCode}");
-            
-        var result = await response.Content.ReadFromJsonAsync<T>();
-        if (result == null)
-            throw new JsonException("Invalid response");
+
+        if (response.StatusCode != HttpStatusCode.NoContent)
+        {
+            var result = await response.Content.ReadFromJsonAsync<T>();
+            if (result == null)
+                throw new JsonException("Invalid response");
         
-        return result;
+            return result;
+        }
+
+        return default;
     }
 }

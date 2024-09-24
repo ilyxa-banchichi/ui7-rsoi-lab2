@@ -10,7 +10,8 @@ namespace Gateway.API.Controllers;
 [Route("api/v1")]
 [ApiController]
 public class GatewayController(
-    ILibraryService libraryService, IReservationService reservationService) : Controller
+    ILibraryService libraryService, IReservationService reservationService,
+    IRatingService ratingService) : Controller
 {
     /// <summary>
     /// Получить список библиотек в городе
@@ -97,6 +98,26 @@ public class GatewayController(
             }
             
             return Ok(reservations);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    /// <summary>
+    /// Получить рейтинг пользователя
+    /// </summary>
+    /// <param name="xUserName">Имя пользователя</param>
+    /// <response code="200">Рейтинг пользователя</response>
+    [HttpGet("rating")]
+    [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetUserRating([FromHeader]string xUserName)
+    { 
+        try
+        {
+            var response = await ratingService.GetUserRating(xUserName);
+            return Ok(response);
         }
         catch (Exception e)
         {

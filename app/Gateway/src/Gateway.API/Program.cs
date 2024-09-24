@@ -31,6 +31,12 @@ builder.Services.AddTransient<IReservationService, ReservationService>(provider 
     return new ReservationService(clientFactory, builder.Configuration.GetConnectionString("ReservationService"));
 });
 
+builder.Services.AddTransient<IRatingService, RatingService>(provider =>
+{
+    var clientFactory = provider.GetRequiredService<IHttpClientFactory>();
+    return new RatingService(clientFactory, builder.Configuration.GetConnectionString("RatingService"));
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

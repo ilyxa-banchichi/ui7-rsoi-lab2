@@ -6,7 +6,7 @@ using RatingService.Storage.Repositories;
 
 namespace RatingService.API.Controllers;
 
-[Route("api/v1")]
+[Route("api/v1/[controller]")]
 [ApiController]
 public class RatingController(IRatingsRepository ratingsRepository) : Controller
 {
@@ -15,7 +15,7 @@ public class RatingController(IRatingsRepository ratingsRepository) : Controller
     /// </summary>
     /// <param name="xUserName">Имя пользователя</param>
     /// <response code="200">Рейтинг пользователя</response>
-    [HttpGet]
+    [HttpGet()]
     [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetUserRating([FromHeader]string xUserName)
     { 

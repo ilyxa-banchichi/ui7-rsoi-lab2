@@ -26,7 +26,7 @@ services:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__RatingService=http://library-service:8050
+      - ConnectionStrings__RatingService=http://rating-service:8050
       - ConnectionStrings__LibraryService=http://library-service:8060
       - ConnectionStrings__ReservationService=http://reservation-service:8070
     ports:
