@@ -32,6 +32,9 @@ public class PostgresContext(DbContextOptions<PostgresContext> options) : DbCont
                 v => v.ToString().ToUpper(), // Конвертация в строку при сохранении
                 v => (BookCondition)Enum.Parse(typeof(BookCondition), v) // Конвертация из строки при чтении
             );
+        
+        modelBuilder.Entity<Book>()
+            .ToTable(t => t.HasCheckConstraint("CHK_Book_Condition", "\"Condition\" IN ('EXCELLENT', 'GOOD', 'BAD')"));
 
         modelBuilder.Entity<Library>().HasData(
             new Library()
@@ -45,7 +48,7 @@ public class PostgresContext(DbContextOptions<PostgresContext> options) : DbCont
             new Library()
             {
                 Id = 2,
-                LibraryUid = Guid.NewGuid(),
+                LibraryUid = Guid.Parse("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"),
                 Name = "Тут ничего нету",
                 City = "Далеко",
                 Address = "Ешё дальше"
@@ -65,7 +68,7 @@ public class PostgresContext(DbContextOptions<PostgresContext> options) : DbCont
             new Book()
             {
                 Id = 2,
-                BookUid = Guid.NewGuid(),
+                BookUid = Guid.Parse("931984da-a1bf-4920-b0a1-3ba53b9e950c"),
                 Name = "Отсутствующая книга",
                 Author = "Какой-то хер",
                 Genre = "Ужас",

@@ -29,6 +29,7 @@ namespace LibraryService.Storage.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.Id);
+                    table.CheckConstraint("CHK_Book_Condition", "\"Condition\" IN ('EXCELLENT', 'GOOD', 'BAD')");
                 });
 
             migrationBuilder.CreateTable(
@@ -78,7 +79,7 @@ namespace LibraryService.Storage.Migrations
                 values: new object[,]
                 {
                     { 1, "Бьерн Страуструп", new Guid("f7cdc58f-2caf-4b15-9727-f89dcc629b27"), "EXCELLENT", "Научная фантастика", "Краткий курс C++ в 7 томах" },
-                    { 2, "Какой-то хер", new Guid("4b069a85-fb1c-4830-ae46-8bf96eeda096"), "BAD", "Ужас", "Отсутствующая книга" }
+                    { 2, "Какой-то хер", new Guid("931984da-a1bf-4920-b0a1-3ba53b9e950c"), "BAD", "Ужас", "Отсутствующая книга" }
                 });
 
             migrationBuilder.InsertData(
@@ -87,7 +88,7 @@ namespace LibraryService.Storage.Migrations
                 values: new object[,]
                 {
                     { 1, "2-я Бауманская ул., д.5, стр.1", "Москва", new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"), "Библиотека имени 7 Непьющих" },
-                    { 2, "Ешё дальше", "Далеко", new Guid("9074f458-2ae8-4d64-9c38-d67aa7d551a3"), "Тут ничего нету" }
+                    { 2, "Ешё дальше", "Далеко", new Guid("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"), "Тут ничего нету" }
                 });
 
             migrationBuilder.InsertData(

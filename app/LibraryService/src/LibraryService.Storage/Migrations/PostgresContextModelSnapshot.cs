@@ -51,7 +51,10 @@ namespace LibraryService.Storage.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", t =>
+                        {
+                            t.HasCheckConstraint("CHK_Book_Condition", "\"Condition\" IN ('EXCELLENT', 'GOOD', 'BAD')");
+                        });
 
                     b.HasData(
                         new
@@ -67,7 +70,7 @@ namespace LibraryService.Storage.Migrations
                         {
                             Id = 2,
                             Author = "Какой-то хер",
-                            BookUid = new Guid("4b069a85-fb1c-4830-ae46-8bf96eeda096"),
+                            BookUid = new Guid("931984da-a1bf-4920-b0a1-3ba53b9e950c"),
                             Condition = "BAD",
                             Genre = "Ужас",
                             Name = "Отсутствующая книга"
@@ -115,7 +118,7 @@ namespace LibraryService.Storage.Migrations
                             Id = 2,
                             Address = "Ешё дальше",
                             City = "Далеко",
-                            LibraryUid = new Guid("9074f458-2ae8-4d64-9c38-d67aa7d551a3"),
+                            LibraryUid = new Guid("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"),
                             Name = "Тут ничего нету"
                         });
                 });
@@ -142,7 +145,7 @@ namespace LibraryService.Storage.Migrations
                         {
                             BookId = 1,
                             LibraryId = 1,
-                            AvailableCount = 0
+                            AvailableCount = 1
                         },
                         new
                         {
