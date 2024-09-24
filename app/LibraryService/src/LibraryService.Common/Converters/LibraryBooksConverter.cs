@@ -9,7 +9,7 @@ public static class LibraryBooksConverter
     {
         return new LibraryBookResponse()
         {
-            BookUid = libraryBooks.Book.BookUid.ToString(),
+            BookUid = libraryBooks.Book.BookUid,
             Name = libraryBooks.Book.Name,
             Author = libraryBooks.Book.Author,
             Genre = libraryBooks.Book.Genre,

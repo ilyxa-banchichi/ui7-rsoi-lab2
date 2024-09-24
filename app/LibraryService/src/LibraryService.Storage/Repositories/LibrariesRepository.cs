@@ -60,4 +60,21 @@ public class LibrariesRepository(PostgresContext db) : ILibrariesRepository
             .Where(l => librariesUid.Contains(l.LibraryUid))
             .ToListAsync();
     }
+    
+    public async Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid)
+    {
+        var book = await db.LibraryBooks
+            .Include(l => l.Library)
+            .Include(l => l.Book)
+            .FirstOrDefaultAsync(l => 
+                l.Library.LibraryUid == libraryUid && l.Book.BookUid == bookUid);
+
+        if (book.AvailableCount <= 0)
+            return await Task.FromResult(false);
+
+        book.AvailableCount -= 1;
+        await db.SaveChangesAsync();
+        
+        return await Task.FromResult(true);
+    }
 }

@@ -19,7 +19,7 @@ public class LibraryService(IHttpClientFactory httpClientFactory, string baseUrl
         return await GetAsync<LibraryBookPaginationResponse>(method);
     }
 
-    public async Task<List<LibraryResponse>?> GetLibrariesList(IEnumerable<Guid> librariesUid)
+    public async Task<List<LibraryResponse>?> GetLibrariesListAsync(IEnumerable<Guid> librariesUid)
     {
         var method = $"/api/v1/libraries/list";
         return await GetAsync<List<LibraryResponse>>(method,
@@ -29,7 +29,7 @@ public class LibraryService(IHttpClientFactory httpClientFactory, string baseUrl
             });
     }
 
-    public async Task<List<BookInfo>?> GetBooksList(IEnumerable<Guid> booksUid)
+    public async Task<List<BookInfo>?> GetBooksListAsync(IEnumerable<Guid> booksUid)
     {
         var method = $"/api/v1/libraries/books/list";
         return await GetAsync<List<BookInfo>>(method,
@@ -37,5 +37,11 @@ public class LibraryService(IHttpClientFactory httpClientFactory, string baseUrl
             {
                 { "booksUid", string.Join(", ", booksUid) }
             });
+    }
+    
+    public async Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid)
+    {
+        var method = $"/api/v1/libraries/{libraryUid}/books/{bookUid}";
+        return await PatchAsync<bool>(method);
     }
 }

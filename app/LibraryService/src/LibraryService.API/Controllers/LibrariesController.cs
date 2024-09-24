@@ -106,4 +106,19 @@ public class LibrariesController(
             return StatusCode(StatusCodes.Status500InternalServerError, e);
         }
     }
+    
+    [HttpPatch("{libraryUid}/books/{bookUid}")]
+    [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TakeBook([Required]Guid libraryUid, [Required]Guid bookUid)
+    {
+        try
+        {
+            var isTaken = await librariesRepository.TakeBookAsync(libraryUid, bookUid);
+            return Ok(isTaken);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
 }

@@ -8,6 +8,7 @@ public interface ILibraryService
     Task<LibraryBookPaginationResponse?> GetBooksInLibraryAsync(
         string libraryUid, int page, int size, bool showAll = false);
 
-    Task<List<LibraryResponse>?> GetLibrariesList(IEnumerable<Guid> librariesUid);
-    Task<List<BookInfo>?> GetBooksList(IEnumerable<Guid> booksUid);
+    Task<List<LibraryResponse>?> GetLibrariesListAsync(IEnumerable<Guid> librariesUid);
+    Task<List<BookInfo>?> GetBooksListAsync(IEnumerable<Guid> booksUid);
+    Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid);
 }

@@ -11,4 +11,5 @@ public interface ILibrariesRepository
         Guid libraryUid, int page = 1, int size = Int32.MaxValue, bool showAll = false);
 
     Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUid);
+    Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid);
 }

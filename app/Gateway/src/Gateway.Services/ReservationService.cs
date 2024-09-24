@@ -14,4 +14,14 @@ public class ReservationService(IHttpClientFactory httpClientFactory, string bas
                 { "xUserName", xUserName }
             });
     }
+
+    public async Task<RawBookReservationResponse?> TakeBook(string xUserName, TakeBookRequest body)
+    {
+        var method = $"/api/v1/reservations";
+        return await PostAsync<RawBookReservationResponse>(method, body,
+            new Dictionary<string, string>()
+            {
+                { "xUserName", xUserName }
+            });
+    }
 }

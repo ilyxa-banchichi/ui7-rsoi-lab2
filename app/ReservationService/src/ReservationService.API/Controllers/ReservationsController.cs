@@ -30,4 +30,31 @@ public class ReservationsController(IReservationsRepository reservationsReposito
             return StatusCode(StatusCodes.Status500InternalServerError, e);
         }
     }
+    
+    /// <summary>
+    /// Взять книгу в библиотеке
+    /// </summary>
+    /// <param name="xUserName">Имя пользователя</param>
+    /// <param name="body"></param>
+    /// <response code="200">Информация о бронировании</response>
+    [HttpPost()]
+    [ProducesResponseType(typeof(RawBookReservationResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> TakeBook(
+        [FromHeader][Required] string xUserName, [FromBody][Required] TakeBookRequest body)
+    {
+        try
+        {
+            var reservations = await reservationsRepository.CreateReservationAsync(
+                userName: xUserName,
+                bookUid: body.BookUid,
+                libraryUid: body.LibraryUid,
+                tillDate: body.TillDate);
+            
+            return Ok(reservations);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
 }

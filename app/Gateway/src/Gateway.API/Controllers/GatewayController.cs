@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Common.Models.DTO;
+using Common.Models.Enums;
 using Gateway.Common.Models.DTO;
 using Gateway.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -75,8 +76,8 @@ public class GatewayController(
             var booksUid = rawReservations.Select(r => r.BookUid);
             var librariesUid = rawReservations.Select(r => r.LibraryUid);
 
-            var booksTask = libraryService.GetBooksList(booksUid);
-            var librariesTask = libraryService.GetLibrariesList(librariesUid);
+            var booksTask = libraryService.GetBooksListAsync(booksUid);
+            var librariesTask = libraryService.GetLibrariesListAsync(librariesUid);
 
             var books = await booksTask;
             var libraries = await librariesTask;
@@ -106,13 +107,71 @@ public class GatewayController(
     }
     
     /// <summary>
+    /// Взять книгу в библиотеке
+    /// </summary>
+    /// <param name="xUserName">Имя пользователя</param>
+    /// <param name="body"></param>
+    /// <response code="200">Информация о бронировании</response>
+    /// <response code="400">Ошибка валидации данных</response>
+    [HttpPost("reservations")]
+    [ProducesResponseType(typeof(TakeBookResponse), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(List<BookReservationResponse>), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> TakeBook(
+        [FromHeader][Required] string xUserName, [FromBody][Required] TakeBookRequest body)
+    {
+        try
+        {
+            var rawReservations = await reservationService.GetUserReservationsAsync(xUserName);
+            var rentedCount = rawReservations.Count(r => r.Status == ReservationStatus.RENTED);
+            
+            var userRating = await ratingService.GetUserRating(xUserName);
+            var maxRentedCount = Math.Ceiling((double)(userRating.Stars / 10));
+            
+            if (rentedCount > maxRentedCount)
+                return Ok(null);
+            
+            var isBookTaken = await libraryService.TakeBookAsync(body.LibraryUid, body.BookUid);
+            if (!isBookTaken)
+                return Ok(null);
+
+            var reservation = await reservationService.TakeBook(xUserName, body);
+
+            var library = (await libraryService.GetLibrariesListAsync(new[] { body.LibraryUid }))[0];
+            var book = (await libraryService.GetBooksListAsync(new[] { body.BookUid }))[0];
+            
+            var response = new TakeBookResponse()
+            {
+                ReservationUid = reservation.ReservationUid,
+                Status = reservation.Status,
+                StartDate = reservation.StartDate.ToString(),
+                TillDate = reservation.TillDate.ToString(),
+                Book = new BookInfo()
+                {
+                    BookUid = book.BookUid,
+                    Name = book.Name,
+                    Author = book.Author,
+                    Genre = book.Genre
+                },
+                Library = library,
+                Rating = userRating,
+            };
+            
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    /// <summary>
     /// Получить рейтинг пользователя
     /// </summary>
     /// <param name="xUserName">Имя пользователя</param>
     /// <response code="200">Рейтинг пользователя</response>
     [HttpGet("rating")]
     [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserRating([FromHeader]string xUserName)
+    public async Task<IActionResult> GetUserRating([FromHeader][Required] string xUserName)
     { 
         try
         {
