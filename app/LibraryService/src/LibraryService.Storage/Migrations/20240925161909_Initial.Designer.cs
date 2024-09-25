@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LibraryService.Storage.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    [Migration("20240924182254_Initial")]
+    [Migration("20240925161909_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -68,15 +68,6 @@ namespace LibraryService.Storage.Migrations
                             Condition = "EXCELLENT",
                             Genre = "Научная фантастика",
                             Name = "Краткий курс C++ в 7 томах"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Author = "Какой-то хер",
-                            BookUid = new Guid("931984da-a1bf-4920-b0a1-3ba53b9e950c"),
-                            Condition = "BAD",
-                            Genre = "Ужас",
-                            Name = "Отсутствующая книга"
                         });
                 });
 
@@ -115,14 +106,6 @@ namespace LibraryService.Storage.Migrations
                             City = "Москва",
                             LibraryUid = new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"),
                             Name = "Библиотека имени 7 Непьющих"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "Ешё дальше",
-                            City = "Далеко",
-                            LibraryUid = new Guid("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"),
-                            Name = "Тут ничего нету"
                         });
                 });
 
@@ -149,24 +132,6 @@ namespace LibraryService.Storage.Migrations
                             BookId = 1,
                             LibraryId = 1,
                             AvailableCount = 1
-                        },
-                        new
-                        {
-                            BookId = 2,
-                            LibraryId = 1,
-                            AvailableCount = 0
-                        },
-                        new
-                        {
-                            BookId = 1,
-                            LibraryId = 2,
-                            AvailableCount = 0
-                        },
-                        new
-                        {
-                            BookId = 2,
-                            LibraryId = 2,
-                            AvailableCount = 0
                         });
                 });
 

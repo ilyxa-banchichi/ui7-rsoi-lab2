@@ -24,5 +24,5 @@ public class TakeBookRequest
     /// </summary>
     /// <value>Дата окончания бронирования</value>
     [DataMember(Name="tillDate")]
-    public DateTime TillDate { get; set; }
+    public DateOnly TillDate { get; set; }
 }

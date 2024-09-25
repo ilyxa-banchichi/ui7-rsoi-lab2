@@ -44,14 +44,6 @@ public class PostgresContext(DbContextOptions<PostgresContext> options) : DbCont
                 Name = "Библиотека имени 7 Непьющих",
                 City = "Москва",
                 Address = "2-я Бауманская ул., д.5, стр.1"
-            },
-            new Library()
-            {
-                Id = 2,
-                LibraryUid = Guid.Parse("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"),
-                Name = "Тут ничего нету",
-                City = "Далеко",
-                Address = "Ешё дальше"
             }
         );
         
@@ -64,23 +56,11 @@ public class PostgresContext(DbContextOptions<PostgresContext> options) : DbCont
                 Author = "Бьерн Страуструп",
                 Genre = "Научная фантастика",
                 Condition = BookCondition.EXCELLENT
-            },
-            new Book()
-            {
-                Id = 2,
-                BookUid = Guid.Parse("931984da-a1bf-4920-b0a1-3ba53b9e950c"),
-                Name = "Отсутствующая книга",
-                Author = "Какой-то хер",
-                Genre = "Ужас",
-                Condition = BookCondition.BAD
             }
         );
 
         modelBuilder.Entity<LibraryBooks>().HasData(
-            new LibraryBooks() { BookId = 1, LibraryId = 1, AvailableCount = 1},
-            new LibraryBooks() { BookId = 2, LibraryId = 1},
-            new LibraryBooks() { BookId = 1, LibraryId = 2},
-            new LibraryBooks() { BookId = 2, LibraryId = 2}
+            new LibraryBooks() { BookId = 1, LibraryId = 1, AvailableCount = 1}
         );
     }
 }

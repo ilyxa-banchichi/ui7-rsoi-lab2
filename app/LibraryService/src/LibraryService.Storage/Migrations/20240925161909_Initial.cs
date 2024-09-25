@@ -4,8 +4,6 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace LibraryService.Storage.Migrations
 {
     /// <inheritdoc />
@@ -76,31 +74,17 @@ namespace LibraryService.Storage.Migrations
             migrationBuilder.InsertData(
                 table: "Books",
                 columns: new[] { "Id", "Author", "BookUid", "Condition", "Genre", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Бьерн Страуструп", new Guid("f7cdc58f-2caf-4b15-9727-f89dcc629b27"), "EXCELLENT", "Научная фантастика", "Краткий курс C++ в 7 томах" },
-                    { 2, "Какой-то хер", new Guid("931984da-a1bf-4920-b0a1-3ba53b9e950c"), "BAD", "Ужас", "Отсутствующая книга" }
-                });
+                values: new object[] { 1, "Бьерн Страуструп", new Guid("f7cdc58f-2caf-4b15-9727-f89dcc629b27"), "EXCELLENT", "Научная фантастика", "Краткий курс C++ в 7 томах" });
 
             migrationBuilder.InsertData(
                 table: "Libraries",
                 columns: new[] { "Id", "Address", "City", "LibraryUid", "Name" },
-                values: new object[,]
-                {
-                    { 1, "2-я Бауманская ул., д.5, стр.1", "Москва", new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"), "Библиотека имени 7 Непьющих" },
-                    { 2, "Ешё дальше", "Далеко", new Guid("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"), "Тут ничего нету" }
-                });
+                values: new object[] { 1, "2-я Бауманская ул., д.5, стр.1", "Москва", new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"), "Библиотека имени 7 Непьющих" });
 
             migrationBuilder.InsertData(
                 table: "LibraryBooks",
                 columns: new[] { "BookId", "LibraryId", "AvailableCount" },
-                values: new object[,]
-                {
-                    { 1, 1, 1 },
-                    { 1, 2, 0 },
-                    { 2, 1, 0 },
-                    { 2, 2, 0 }
-                });
+                values: new object[] { 1, 1, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LibraryBooks_LibraryId",

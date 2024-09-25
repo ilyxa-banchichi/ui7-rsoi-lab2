@@ -39,16 +39,16 @@ namespace ReservationService.Storage.Migrations
                     b.Property<Guid>("ReservationUid")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<DateTime>("TillDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("TillDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -60,41 +60,6 @@ namespace ReservationService.Storage.Migrations
                     b.ToTable("Reservations", t =>
                         {
                             t.HasCheckConstraint("CHK_Reservation_Status", "\"Status\" IN ('RENTED', 'RETURNED', 'EXPIRED')");
-                        });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BookUid = new Guid("f7cdc58f-2caf-4b15-9727-f89dcc629b27"),
-                            LibraryUid = new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"),
-                            ReservationUid = new Guid("95428f22-731a-4c1c-9940-6479b25a8ade"),
-                            StartDate = new DateTime(2024, 9, 17, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "RENTED",
-                            TillDate = new DateTime(2024, 9, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Username = "Ilya"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BookUid = new Guid("931984da-a1bf-4920-b0a1-3ba53b9e950c"),
-                            LibraryUid = new Guid("15507b2f-8a04-4e59-b2a9-b4d9eb7f7df0"),
-                            ReservationUid = new Guid("c085af6e-13bb-4c17-ba0b-408dd436eff7"),
-                            StartDate = new DateTime(2024, 9, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "RENTED",
-                            TillDate = new DateTime(2024, 9, 30, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Username = "Ilya"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BookUid = new Guid("f7cdc58f-2caf-4b15-9727-f89dcc629b27"),
-                            LibraryUid = new Guid("83575e12-7ce0-48ee-9931-51919ff3c9ee"),
-                            ReservationUid = new Guid("0b1ef17b-3e4a-437b-829b-a288af63b9d5"),
-                            StartDate = new DateTime(2024, 9, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = "EXPIRED",
-                            TillDate = new DateTime(2024, 9, 22, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Username = "Pavel"
                         });
                 });
 #pragma warning restore 612, 618

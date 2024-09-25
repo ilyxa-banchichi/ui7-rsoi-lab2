@@ -24,8 +24,8 @@ public class Reservation
     public ReservationStatus Status { get; set; }
 
     [Required]
-    public DateTime StartDate { get; set; }
+    public DateOnly StartDate { get; set; }
 
     [Required]
-    public DateTime TillDate { get; set; }
+    public DateOnly TillDate { get; set; }
 }

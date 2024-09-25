@@ -3,8 +3,6 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace RatingService.Storage.Migrations
 {
     /// <inheritdoc />
@@ -25,15 +23,6 @@ namespace RatingService.Storage.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ratings", x => x.Id);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Ratings",
-                columns: new[] { "Id", "Stars", "Username" },
-                values: new object[,]
-                {
-                    { 1, 87, "Ilya" },
-                    { 2, 10, "Pavel" }
                 });
         }
 

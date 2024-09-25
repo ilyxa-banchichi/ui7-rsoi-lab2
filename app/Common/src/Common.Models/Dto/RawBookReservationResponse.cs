@@ -12,6 +12,6 @@ public class RawBookReservationResponse
     
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public ReservationStatus Status { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime TillDate { get; set; }
+    public DateOnly StartDate { get; set; }
+    public DateOnly TillDate { get; set; }
 }

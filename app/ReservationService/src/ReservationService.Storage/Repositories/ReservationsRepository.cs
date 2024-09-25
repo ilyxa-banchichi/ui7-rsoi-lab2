@@ -13,7 +13,7 @@ public class ReservationsRepository(PostgresContext db) : IReservationsRepositor
     }
     
     public async Task<Reservation> CreateReservationAsync(
-        string userName, Guid bookUid, Guid libraryUid, DateTime tillDate)
+        string userName, Guid bookUid, Guid libraryUid, DateOnly tillDate)
     {
         var reservation = new Reservation()
         {
@@ -23,8 +23,8 @@ public class ReservationsRepository(PostgresContext db) : IReservationsRepositor
             BookUid = bookUid,
             LibraryUid = libraryUid,
             Status = ReservationStatus.RENTED,
-            StartDate = DateTime.Now.ToUniversalTime(),
-            TillDate = tillDate.ToUniversalTime()
+            StartDate = DateOnly.FromDateTime(DateTime.Now),
+            TillDate = tillDate
         };
         
         reservation = (await db.Reservations.AddAsync(reservation)).Entity;
