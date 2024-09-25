@@ -79,7 +79,7 @@ public class LibrariesController(
     
     [HttpGet("list")]
     [ProducesResponseType(typeof(List<LibraryResponse>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetLibrariesList([FromHeader(Name = "X-User-Name")] IEnumerable<Guid> librariesUid)
+    public async Task<IActionResult> GetLibrariesList([FromHeader] IEnumerable<Guid> librariesUid)
     {
         try
         {
@@ -94,7 +94,7 @@ public class LibrariesController(
     
     [HttpGet("books/list")]
     [ProducesResponseType(typeof(List<BookInfo>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetBooksList([FromHeader(Name = "X-User-Name")] IEnumerable<Guid> booksUid)
+    public async Task<IActionResult> GetBooksList([FromHeader] IEnumerable<Guid> booksUid)
     {
         try
         {
