@@ -21,11 +21,11 @@ public class RatingController(IRatingsRepository ratingsRepository) : Controller
     { 
         try
         {
-            var response = await ratingsRepository.GetUserRatingAsync(xUserName);
-            if (response != null)
-                return Ok(response.ConvertAppModelToDto());
-            
-            return Ok(null);
+            var rating = await ratingsRepository.GetUserRatingAsync(xUserName);
+            if (rating == null)
+                rating = await ratingsRepository.AddNewUserAsync(xUserName);
+
+            return Ok(rating.ConvertAppModelToDto());
         }
         catch (Exception e)
         {
