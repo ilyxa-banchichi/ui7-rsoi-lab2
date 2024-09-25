@@ -24,7 +24,7 @@ public class ReservationsRepository(PostgresContext db) : IReservationsRepositor
             LibraryUid = libraryUid,
             Status = ReservationStatus.RENTED,
             StartDate = DateTime.Now.ToUniversalTime(),
-            TillDate = tillDate
+            TillDate = tillDate.ToUniversalTime()
         };
         
         reservation = (await db.Reservations.AddAsync(reservation)).Entity;
