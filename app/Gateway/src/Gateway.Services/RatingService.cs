@@ -11,7 +11,7 @@ public class RatingService(IHttpClientFactory httpClientFactory, string baseUrl)
         return await GetAsync<UserRatingResponse>(method,
             new Dictionary<string, string>()
             {
-                { "xUserName", xUserName }
+                { "X-User-Name", xUserName }
             });
     }
 }

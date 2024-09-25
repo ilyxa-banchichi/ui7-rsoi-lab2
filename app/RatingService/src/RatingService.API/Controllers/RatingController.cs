@@ -17,7 +17,7 @@ public class RatingController(IRatingsRepository ratingsRepository) : Controller
     /// <response code="200">Рейтинг пользователя</response>
     [HttpGet()]
     [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserRating([FromHeader]string xUserName)
+    public async Task<IActionResult> GetUserRating([FromHeader(Name = "X-User-Name")]string xUserName)
     { 
         try
         {

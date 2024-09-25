@@ -11,7 +11,7 @@ public class ReservationService(IHttpClientFactory httpClientFactory, string bas
         return await GetAsync<List<RawBookReservationResponse>>(method,
             new Dictionary<string, string>()
             {
-                { "xUserName", xUserName }
+                { "X-User-Name", xUserName }
             });
     }
 
@@ -21,7 +21,7 @@ public class ReservationService(IHttpClientFactory httpClientFactory, string bas
         return await PostAsync<RawBookReservationResponse>(method, body,
             new Dictionary<string, string>()
             {
-                { "xUserName", xUserName }
+                { "X-User-Name", xUserName }
             });
     }
 }

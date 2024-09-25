@@ -67,7 +67,7 @@ public class GatewayController(
     /// <response code="200">Информация по всем взятым в прокат книгам</response>
     [HttpGet("reservations")]
     [ProducesResponseType(typeof(List<BookReservationResponse>), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserReservations([FromHeader][Required] string xUserName)
+    public async Task<IActionResult> GetUserReservations([FromHeader(Name = "X-User-Name")][Required] string xUserName)
     {
         try
         {
@@ -117,7 +117,7 @@ public class GatewayController(
     [ProducesResponseType(typeof(TakeBookResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(List<BookReservationResponse>), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> TakeBook(
-        [FromHeader][Required] string xUserName, [FromBody][Required] TakeBookRequest body)
+        [FromHeader(Name = "X-User-Name")][Required] string xUserName, [FromBody][Required] TakeBookRequest body)
     {
         try
         {
@@ -171,7 +171,7 @@ public class GatewayController(
     /// <response code="200">Рейтинг пользователя</response>
     [HttpGet("rating")]
     [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
-    public async Task<IActionResult> GetUserRating([FromHeader][Required] string xUserName)
+    public async Task<IActionResult> GetUserRating([FromHeader(Name = "X-User-Name")][Required] string xUserName)
     { 
         try
         {
