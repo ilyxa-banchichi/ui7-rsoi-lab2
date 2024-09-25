@@ -91,8 +91,8 @@ public class GatewayController(
                 {
                     ReservationUid = rawReservation.ReservationUid,
                     Status = rawReservation.Status,
-                    StartDate = rawReservation.StartDate.ToString(),
-                    TillDate = rawReservation.TillDate.ToString(),
+                    StartDate = rawReservation.StartDate,
+                    TillDate = rawReservation.TillDate,
                     Book = books[i],
                     Library = libraries[i]
                 });
@@ -143,8 +143,8 @@ public class GatewayController(
             {
                 ReservationUid = reservation.ReservationUid,
                 Status = reservation.Status,
-                StartDate = reservation.StartDate.ToString(),
-                TillDate = reservation.TillDate.ToString(),
+                StartDate = reservation.StartDate,
+                TillDate = reservation.TillDate,
                 Book = new BookInfo()
                 {
                     BookUid = book.BookUid,

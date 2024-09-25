@@ -1,6 +1,8 @@
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using Common.Models.DTO;
 using Common.Models.Enums;
+using Common.Models.Serialization;
 
 namespace Gateway.Common.Models.DTO;
 
@@ -25,14 +27,16 @@ public class BookReservationResponse
     /// </summary>
     /// <value>Дата начала бронирования</value>
     [DataMember(Name="startDate")]
-    public string StartDate { get; set; }
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
+    public DateOnly StartDate { get; set; }
 
     /// <summary>
     /// Дата окончания бронирования
     /// </summary>
     /// <value>Дата окончания бронирования</value>
     [DataMember(Name="tillDate")]
-    public string TillDate { get; set; }
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
+    public DateOnly TillDate { get; set; }
     
     [DataMember(Name="book")]
     public BookInfo Book { get; set; }

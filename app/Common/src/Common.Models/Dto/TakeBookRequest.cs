@@ -1,4 +1,7 @@
+using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using Common.Models.Serialization;
 
 namespace Common.Models.DTO;
 
@@ -24,5 +27,6 @@ public class TakeBookRequest
     /// </summary>
     /// <value>Дата окончания бронирования</value>
     [DataMember(Name="tillDate")]
+    [JsonConverter(typeof(DateOnlyJsonConverter))]
     public DateOnly TillDate { get; set; }
 }
