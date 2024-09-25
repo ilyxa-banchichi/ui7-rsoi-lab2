@@ -753,7 +753,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8080"
+			"value": "http://89.169.165.73:8080"
 		},
 		{
 			"key": "libraryUid",
