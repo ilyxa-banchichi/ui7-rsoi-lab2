@@ -1,3 +1,4 @@
+using Common.Models.Serialization;
 using ReservationService.Storage.DbContexts;
 using ReservationService.Storage.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    });
 
 builder.Services.AddDbContext<PostgresContext>(
     options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))

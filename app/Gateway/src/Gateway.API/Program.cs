@@ -1,3 +1,4 @@
+using Common.Models.Serialization;
 using Gateway.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +17,13 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    });
 
 builder.Services.AddTransient<ILibraryService, LibraryService>(provider =>
 {
