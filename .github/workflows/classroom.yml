@@ -8,31 +8,93 @@ on:
       - master
 env:
   BUILD_CONFIGURATION: Debug
+  APP_PATH: /home/${{ secrets.SSH_USER_NAME }}/lab1
 
 jobs:
-  build:
-    name: Autograding
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker images
+      env:
+        BUILD_CONFIGURATION: ${{ env.BUILD_CONFIGURATION }}
+      run: |
+        docker compose build
+        docker compose push
+
+  deploy:
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Clear app directory
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.SSH_USER_NAME }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.SSH_PASS }}
+        port: 22
+        script: |
+          rm -rf ${{ env.APP_PATH }}
+          mkdir -p ${{ env.APP_PATH }}
+
+    - name: Copy docker-compose file
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.SSH_USER_NAME }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.SSH_PASS }}
+        port: 22
+        source: ./docker-compose.yml
+        target: ${{ env.APP_PATH }}
+
+    - name: Copy postgres configs
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.SSH_USER_NAME }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.SSH_PASS }}
+        port: 22
+        source: ./postgres
+        target: ${{ env.APP_PATH }}
+
+    - name: Start container
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.SSH_USER_NAME }}
+        key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.SSH_PASS }}
+        port: 22
+        script: |
+          cd ${{ env.APP_PATH }}
+          docker compose down --rmi all
+          docker compose up -d
+
+  Autograding:
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: docker/setup-buildx-action@v2
-
-      - name: Build images
-        env:
-          BUILD_CONFIGURATION: ${{ env.BUILD_CONFIGURATION }}
-        timeout-minutes: 10
-        run: docker compose build
-
-      - name: Run containers
-        timeout-minutes: 5
-        run: |
-          docker compose up -d
-          sleep 30
-        env:
-          WAIT_PORTS: 8080,8070,8060,8050
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master
