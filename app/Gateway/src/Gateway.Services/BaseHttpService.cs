@@ -80,7 +80,7 @@ public abstract class BaseHttpService
                 httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
         }
 
-        var response = await httpClient.PatchAsync(method, JsonContent.Create(body));
+        var response = await httpClient.PatchAsync(method, body != null ? JsonContent.Create(body) : null);
         if (!response.IsSuccessStatusCode)
             throw new HttpRequestException(HttpRequestError.InvalidResponse,
                 $"StatusCode: {response.StatusCode}", statusCode: response.StatusCode);

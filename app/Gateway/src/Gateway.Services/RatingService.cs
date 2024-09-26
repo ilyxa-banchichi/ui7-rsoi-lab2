@@ -19,7 +19,7 @@ public class RatingService(IHttpClientFactory httpClientFactory, string baseUrl)
     {
         var method = $"/api/v1/rating/increase";
         return await PatchAsync<UserRatingResponse>(method,
-            new Dictionary<string, string>()
+            headers: new Dictionary<string, string>()
             {
                 { "X-User-Name", xUserName }
             });
@@ -29,7 +29,7 @@ public class RatingService(IHttpClientFactory httpClientFactory, string baseUrl)
     {
         var method = $"/api/v1/rating/decrease";
         return await PatchAsync<UserRatingResponse>(method,
-            new Dictionary<string, string>()
+            headers: new Dictionary<string, string>()
             {
                 { "X-User-Name", xUserName }
             });

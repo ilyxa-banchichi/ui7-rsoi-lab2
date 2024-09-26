@@ -65,7 +65,7 @@ public class ReservationsController(IReservationsRepository reservationsReposito
     /// <param name="date">Дата возврата</param>
     /// <response code="200">Книга успешно возвращена</response>
     /// <response code="404">Бронирование не найдено</response>
-    [HttpPatch("reservations/{reservationUid}/return")]
+    [HttpPatch("{reservationUid}/return")]
     [ProducesResponseType(typeof(RawBookReservationResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> ReturnBook([FromRoute] Guid reservationUid, [FromBody] DateOnly date)
