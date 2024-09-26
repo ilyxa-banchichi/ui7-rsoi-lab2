@@ -11,6 +11,12 @@ namespace ReservationService.API.Controllers;
 [ApiController]
 public class ReservationsController(IReservationsRepository reservationsRepository) : Controller
 {
+    [HttpGet("/manage/health")]
+    public IActionResult Health()
+    {
+        return Ok();
+    }
+    
     /// <summary>
     /// Получить информацию по всем взятым в прокат книгам пользователя
     /// </summary>

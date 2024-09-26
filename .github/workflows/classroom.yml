@@ -11,7 +11,7 @@ env:
   APP_PATH: /home/${{ secrets.SSH_USER_NAME }}/lab2
 
 jobs:
-  publish:
+  Publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,8 +34,8 @@ jobs:
         docker compose build
         docker compose push
 
-  deploy:
-    needs: publish
+  Deploy:
+    needs: Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -89,8 +89,20 @@ jobs:
           docker compose down --rmi all
           docker compose up -d
 
+  Healthcheck:
+    needs: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run healthcheck script
+        timeout-minutes: 5
+        run: ./scripts/wait-script.sh
+        env:
+          WAIT_PORTS: 8080,8070,8060,8050
+
   Autograding:
-    needs: deploy
+    needs: Healthcheck
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

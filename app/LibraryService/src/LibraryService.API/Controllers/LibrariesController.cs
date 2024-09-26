@@ -13,6 +13,12 @@ namespace LibraryService.API.Controllers;
 public class LibrariesController(
     ILibrariesRepository librariesRepository, IBooksRepository booksRepository) : Controller
 {
+    [HttpGet("/manage/health")]
+    public IActionResult Health()
+    {
+        return Ok();
+    }
+    
     /// <summary>
     /// Получить список библиотек в городе
     /// </summary>

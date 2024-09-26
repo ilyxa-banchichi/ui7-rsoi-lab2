@@ -10,6 +10,12 @@ namespace RatingService.API.Controllers;
 [ApiController]
 public class RatingController(IRatingsRepository ratingsRepository) : Controller
 {
+    [HttpGet("/manage/health")]
+    public IActionResult Health()
+    {
+        return Ok();
+    }
+    
     /// <summary>
     /// Получить рейтинг пользователя
     /// </summary>
