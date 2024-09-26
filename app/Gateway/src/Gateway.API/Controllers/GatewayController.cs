@@ -14,6 +14,12 @@ public class GatewayController(
     ILibraryService libraryService, IReservationService reservationService,
     IRatingService ratingService) : Controller
 {
+    [HttpGet("/manage/health")]
+    public IActionResult Health()
+    {
+        return Ok();
+    }
+    
     /// <summary>
     /// Получить список библиотек в городе
     /// </summary>
