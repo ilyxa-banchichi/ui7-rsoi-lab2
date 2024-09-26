@@ -11,7 +11,7 @@ public interface ILibrariesRepository
     Task<List<LibraryBooks>> GetBooksInLibraryAsync(
         Guid libraryUid, int page = 1, int size = Int32.MaxValue, bool showAll = false);
 
-    Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUid);
+    Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUids);
     Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid);
     
     /// <returns>Old book condition</returns>

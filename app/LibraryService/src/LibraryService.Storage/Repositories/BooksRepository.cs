@@ -6,10 +6,15 @@ namespace LibraryService.Storage.Repositories;
 
 public class BooksRepository(PostgresContext db) : IBooksRepository
 {
-    public async Task<List<Book>> GetBooksListAsync(IEnumerable<Guid> booksUid)
+    public async Task<List<Book>> GetBooksListAsync(IEnumerable<Guid> booksUids)
     {
-        return await db.Books
-            .Where(l => booksUid.Contains(l.BookUid))
-            .ToListAsync();
+        var list = new List<Book>(booksUids.Count());
+        foreach (var booksUid in booksUids)
+        {
+            var book = await db.Books.FirstOrDefaultAsync(b => b.BookUid == booksUid);
+            list.Add(book);
+        }
+
+        return list;
     }
 }

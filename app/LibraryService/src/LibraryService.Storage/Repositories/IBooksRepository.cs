@@ -4,5 +4,5 @@ namespace LibraryService.Storage.Repositories;
 
 public interface IBooksRepository
 {
-    Task<List<Book>> GetBooksListAsync(IEnumerable<Guid> booksUid);
+    Task<List<Book>> GetBooksListAsync(IEnumerable<Guid> booksUids);
 }

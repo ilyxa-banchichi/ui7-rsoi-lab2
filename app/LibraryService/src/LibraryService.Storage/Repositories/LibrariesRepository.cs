@@ -55,11 +55,16 @@ public class LibrariesRepository(PostgresContext db) : ILibrariesRepository
             .ToListAsync();
     }
 
-    public async Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUid)
+    public async Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUids)
     {
-        return await db.Libraries
-            .Where(l => librariesUid.Contains(l.LibraryUid))
-            .ToListAsync();
+        var list = new List<Library>(librariesUids.Count());
+        foreach (var librariesUid in librariesUids)
+        {
+            var library = await db.Libraries.FirstOrDefaultAsync(l => l.LibraryUid == librariesUid);
+            list.Add(library);
+        }
+
+        return list;
     }
     
     public async Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid)
