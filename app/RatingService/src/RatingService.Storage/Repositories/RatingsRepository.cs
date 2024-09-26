@@ -23,4 +23,28 @@ public class RatingsRepository(PostgresContext db) : IRatingsRepository
         await db.SaveChangesAsync();
         return rating;
     }
+
+    public async Task<Rating?> IncreaseRatingAsync(string userName)
+    {
+        var rating = await db.Ratings.FirstOrDefaultAsync(r => r.Username == userName);
+        if (rating == null)
+            return null;
+
+        rating.Stars += 1;
+        
+        await db.SaveChangesAsync();
+        return rating;
+    }
+
+    public async Task<Rating?> DecreaseRatingAsync(string userName)
+    {
+        var rating = await db.Ratings.FirstOrDefaultAsync(r => r.Username == userName);
+        if (rating == null)
+            return null;
+
+        rating.Stars -= 10;
+        
+        await db.SaveChangesAsync();
+        return rating;
+    }
 }

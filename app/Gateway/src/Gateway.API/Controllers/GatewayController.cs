@@ -165,6 +165,53 @@ public class GatewayController(
     }
     
     /// <summary>
+    /// Вернуть книгу
+    /// </summary>
+    /// <param name="xUserName">Имя пользователя</param>
+    /// <param name="reservationUid">UUID бронирования</param>
+    /// <param name="body"></param>
+    /// <response code="204">Книга успешно возвращена</response>
+    /// <response code="404">Бронирование не найдено</response>
+    [HttpPost("reservations/{reservationUid}/return")]
+    [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> ReturnBook(
+        [FromHeader(Name="X-User-Name")][Required] string xUserName,
+        [FromRoute] Guid reservationUid, [FromBody] ReturnBookRequest body)
+    {
+        try
+        {
+            var reservation = await reservationService.ReturnBook(reservationUid, body.Date);
+            if (reservation == null)
+                return NotFound(new ErrorResponse("Бронирование не найдено"));
+            
+            var updateBook = await libraryService.ReturnBookAsync(
+                reservation.LibraryUid, reservation.BookUid, body.Condition);
+
+            bool isConditionChanged = updateBook.NewCondition != updateBook.OldCondition;
+            bool isExpired = reservation.Status == ReservationStatus.EXPIRED;
+
+            if (!isConditionChanged && !isExpired)
+            {
+                await ratingService.IncreaseRating(xUserName);
+            }
+            else
+            {
+                if (isConditionChanged)
+                    await ratingService.DecreaseRating(xUserName);
+
+                if (isExpired)
+                    await ratingService.DecreaseRating(xUserName);
+            }
+            
+            return Ok(null);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    /// <summary>
     /// Получить рейтинг пользователя
     /// </summary>
     /// <param name="xUserName">Имя пользователя</param>

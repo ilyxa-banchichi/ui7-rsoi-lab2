@@ -1,3 +1,4 @@
+using Common.Models.Enums;
 using LibraryService.Common.Models;
 
 namespace LibraryService.Storage.Repositories;
@@ -12,4 +13,7 @@ public interface ILibrariesRepository
 
     Task<List<Library>> GetLibrariesListAsync(IEnumerable<Guid> librariesUid);
     Task<bool> TakeBookAsync(Guid libraryUid, Guid bookUid);
+    
+    /// <returns>Old book condition</returns>
+    Task<BookCondition> ReturnBookAsync(Guid libraryUid, Guid bookUid, BookCondition condition);
 }

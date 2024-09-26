@@ -1,4 +1,5 @@
 using Common.Models.DTO;
+using Common.Models.Enums;
 
 namespace Gateway.Services;
 
@@ -43,5 +44,11 @@ public class LibraryService(IHttpClientFactory httpClientFactory, string baseUrl
     {
         var method = $"/api/v1/libraries/{libraryUid}/books/{bookUid}";
         return await PatchAsync<bool>(method);
+    }
+
+    public async Task<UpdateBookConditionResponse?> ReturnBookAsync(Guid libraryUid, Guid bookUid, BookCondition condition)
+    {
+        var method = $"/api/v1/libraries/{libraryUid}/books/{bookUid}/return";
+        return await PatchAsync<UpdateBookConditionResponse>(method, body: condition);
     }
 }

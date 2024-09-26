@@ -32,4 +32,52 @@ public class RatingController(IRatingsRepository ratingsRepository) : Controller
             return StatusCode(StatusCodes.Status500InternalServerError, e);
         }
     }
+    
+    /// <summary>
+    /// Увеличить рейтинг пользователя
+    /// </summary>
+    /// <param name="xUserName">Имя пользователя</param>
+    /// <response code="200">Рейтинг пользователя</response>
+    /// <response code="404">Пользователь не найден</response>
+    [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
+    [HttpPatch("increase")]
+    public async Task<IActionResult> IncreaseRating([FromHeader(Name = "X-User-Name")]string xUserName)
+    { 
+        try
+        {
+            var rating = await ratingsRepository.IncreaseRatingAsync(xUserName);
+            if (rating == null)
+                return NotFound("User not found");
+            
+            return Ok(rating.ConvertAppModelToDto());
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    /// <summary>
+    /// Уменьшить рейтинг пользователя
+    /// </summary>
+    /// <param name="xUserName">Имя пользователя</param>
+    /// <response code="200">Рейтинг пользователя</response>
+    /// <response code="404">Пользователь не найден</response>
+    [ProducesResponseType(typeof(UserRatingResponse), (int)HttpStatusCode.OK)]
+    [HttpPatch("decrease")]
+    public async Task<IActionResult> DecreaseRating([FromHeader(Name = "X-User-Name")]string xUserName)
+    { 
+        try
+        {
+            var rating = await ratingsRepository.DecreaseRatingAsync(xUserName);
+            if (rating == null)
+                return NotFound("User not found");
+            
+            return Ok(rating.ConvertAppModelToDto());
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
 }

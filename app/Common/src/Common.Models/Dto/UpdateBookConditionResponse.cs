@@ -1,11 +1,10 @@
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-using Common.Models.Serialization;
+using Common.Models.Enums;
 
 namespace Common.Models.DTO;
 
 [DataContract]
-public class TakeBookRequest
+public class UpdateBookConditionResponse
 {
     /// <summary>
     /// UUID книги
@@ -21,11 +20,6 @@ public class TakeBookRequest
     [DataMember(Name="libraryUid")]
     public Guid LibraryUid { get; set; }
 
-    /// <summary>
-    /// Дата окончания бронирования
-    /// </summary>
-    /// <value>Дата окончания бронирования</value>
-    [DataMember(Name="tillDate")]
-    [JsonConverter(typeof(DateOnlyJsonConverter))]
-    public DateOnly TillDate { get; set; }
+    public BookCondition OldCondition  { get; set; }
+    public BookCondition NewCondition  { get; set; }
 }

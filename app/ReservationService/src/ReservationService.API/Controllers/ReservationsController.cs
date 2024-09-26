@@ -57,4 +57,30 @@ public class ReservationsController(IReservationsRepository reservationsReposito
             return StatusCode(StatusCodes.Status500InternalServerError, e);
         }
     }
+    
+    /// <summary>
+    /// Вернуть книгу
+    /// </summary>
+    /// <param name="reservationUid">UUID бронирования</param>
+    /// <param name="date">Дата возврата</param>
+    /// <response code="200">Книга успешно возвращена</response>
+    /// <response code="404">Бронирование не найдено</response>
+    [HttpPatch("reservations/{reservationUid}/return")]
+    [ProducesResponseType(typeof(RawBookReservationResponse), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> ReturnBook([FromRoute] Guid reservationUid, [FromBody] DateOnly date)
+    {
+        try
+        {
+            var reservation = await reservationsRepository.ReturnBookAsync(reservationUid, date);
+            if (reservation == null)
+                return NotFound(new ErrorResponse("Бронирование не найдено"));
+            
+            return Ok(reservation.ConvertAppModelToDto());
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
 }

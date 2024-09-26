@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http.Json;
 using Common.Models.DTO;
 
 namespace Gateway.Services;
@@ -23,5 +25,21 @@ public class ReservationService(IHttpClientFactory httpClientFactory, string bas
             {
                 { "X-User-Name", xUserName }
             });
+    }
+    
+    public async Task<RawBookReservationResponse?> ReturnBook(Guid reservationUid, DateOnly date)
+    {
+        try
+        {
+            var method = $"/api/v1/reservations/{reservationUid}/return";
+            return await PatchAsync<RawBookReservationResponse>(method, date);
+        }
+        catch (HttpRequestException ex)
+        {
+            if (ex.StatusCode == HttpStatusCode.NotFound)
+                return null;
+            
+            throw;
+        }
     }
 }

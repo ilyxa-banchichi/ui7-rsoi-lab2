@@ -1,3 +1,4 @@
+using Common.Models.Enums;
 using LibraryService.Common.Exceptions;
 using LibraryService.Common.Models;
 using LibraryService.Storage.DbContexts;
@@ -70,11 +71,28 @@ public class LibrariesRepository(PostgresContext db) : ILibrariesRepository
                 l.Library.LibraryUid == libraryUid && l.Book.BookUid == bookUid);
 
         if (book.AvailableCount <= 0)
-            return await Task.FromResult(false);
+            return false;
 
         book.AvailableCount -= 1;
         await db.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<BookCondition> ReturnBookAsync(Guid libraryUid, Guid bookUid, BookCondition condition)
+    {
+        var book = await db.LibraryBooks
+            .Include(l => l.Library)
+            .Include(l => l.Book)
+            .FirstOrDefaultAsync(l => 
+                l.Library.LibraryUid == libraryUid && l.Book.BookUid == bookUid);
+
+        book.AvailableCount += 1;
+
+        var oldBookCondition = book.Book.Condition;
+        book.Book.Condition = condition;
         
-        return await Task.FromResult(true);
+        await db.SaveChangesAsync();
+        return oldBookCondition;
     }
 }

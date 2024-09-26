@@ -29,6 +29,23 @@ public class ReservationsRepository(PostgresContext db) : IReservationsRepositor
         
         reservation = (await db.Reservations.AddAsync(reservation)).Entity;
         await db.SaveChangesAsync();
-        return await Task.FromResult(reservation);
+        return reservation;
+    }
+    
+    public async Task<Reservation?> ReturnBookAsync(Guid reservationUid, DateOnly tillDate)
+    {
+        var reservation = await db.Reservations
+            .FirstOrDefaultAsync(r => r.ReservationUid == reservationUid);
+
+        if (reservation == null)
+            return null;
+
+        if (tillDate > reservation.TillDate)
+            reservation.Status = ReservationStatus.EXPIRED;
+        else
+            reservation.Status = ReservationStatus.RETURNED;
+
+        await db.SaveChangesAsync();
+        return reservation;
     }
 }

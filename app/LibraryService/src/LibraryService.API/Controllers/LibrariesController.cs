@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Common.Models.DTO;
+using Common.Models.Enums;
 using LibraryService.Common.Converters;
 using LibraryService.Storage.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -115,6 +116,28 @@ public class LibrariesController(
         {
             var isTaken = await librariesRepository.TakeBookAsync(libraryUid, bookUid);
             return Ok(isTaken);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, e);
+        }
+    }
+    
+    [HttpPatch("{libraryUid}/books/{bookUid}/return")]
+    [ProducesResponseType(typeof(UpdateBookConditionResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> ReturnBook(
+        [Required]Guid libraryUid, [Required]Guid bookUid, [Required][FromBody]BookCondition condition)
+    {
+        try
+        {
+            var oldBookCondition = await librariesRepository.ReturnBookAsync(libraryUid, bookUid, condition);
+            return Ok(new UpdateBookConditionResponse()
+            {
+                LibraryUid = libraryUid,
+                BookUid = bookUid,
+                OldCondition = oldBookCondition,
+                NewCondition = condition
+            });
         }
         catch (Exception e)
         {
